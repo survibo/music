@@ -1,4 +1,4 @@
-		 <!DOCTYPE html>
+        <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -7,7 +7,7 @@
 </head>
 <body>
     <h1>Music Player</h1>
-    <p>Press <strong>Spacebar</strong> to play next song.</p>
+    <p>Press <strong>Spacebar</strong> to play the next song.</p>
     <p>Press <strong>M</strong> to toggle mute.</p>
     <p><strong>Currently Playing:</strong> <span id="currentSong">None</span></p>
     <p><strong>Next Song:</strong> <span id="nextSong">None</span></p>
@@ -19,9 +19,9 @@
             "For the first time in forever 편집본 2.wav",
             "Love is an open door 편집본.wav",
             "https://drive.google.com/file/d/1xMMz8EZ4XU8ETtbZwKj6XhN4Ovn1gSK7/view?usp=sharing",
-	    "문닫는 소리.wav",
-	    "바람 효과음.mp3",
-	    "In summer.mp3"
+			   "문닫는 소리.wav",
+			  	"바람 효과음.mp3",
+			  	"In summer.mp3"
         ];
 
         let currentSongIndex = 0; // Track the current song index
@@ -72,18 +72,13 @@
             }
         });
 
-        // Automatically play the next song when the current one ends
-        audio.addEventListener("ended", playNextSong);
+        // Prevent automatic play of the next song when the current one ends
+        audio.addEventListener("ended", () => {
+            audio.pause(); // Pause the audio explicitly
+        });
 
         // Initialize the displayed song info
         updateSongInfo();
-    </script>
-</body>
-</html>
-
-
-        // Automatically play the next song when the current one ends
-        audio.addEventListener("ended", playNextSong);
     </script>
 </body>
 </html>
