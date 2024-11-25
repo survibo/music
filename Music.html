@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Play Songs with Spacebar</title>
+</head>
+<body>
+    <h1>Press the Spacebar to Play Songs</h1>
+    <script>
+        // Song URLs
+        const songs = [
+            "Do you want to build a snow man 편집본.wav", // Replace with the actual path or URL to your audio file
+            "For the first time in forever 편집본 2.wav",
+            "In summer.mp3",
+            "Love is an open door 편집본.wav",
+            "문닫는 소리.wav",
+				"바람 효과음.mp3",
+            "https://drive.google.com/file/d/1xMMz8EZ4XU8ETtbZwKj6XhN4Ovn1gSK7/view?usp=sharing"
+        ];
+
+        let currentSongIndex = 0;
+        let audio = new Audio();
+
+        // Function to play the next song
+        function playNextSong() {
+            if (currentSongIndex < songs.length) {
+                audio.src = songs[currentSongIndex];
+                audio.play();
+                currentSongIndex++;
+            } else {
+                currentSongIndex = 0; // Reset to the first song
+            }
+        }
+
+        // Listen for the spacebar key press
+        document.addEventListener("keydown", (event) => {
+            if (event.code === "Space") {
+                event.preventDefault(); // Prevent scrolling
+                if (!audio.paused) {
+                    audio.pause(); // Pause if already playing
+                } else {
+                    playNextSong();
+                }
+            }
+        });
+
+        // Automatically play the next song when the current one ends
+        audio.addEventListener("ended", playNextSong);
+    </script>
+</body>
+</html>
