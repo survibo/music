@@ -10,7 +10,7 @@
     <p>Press <strong>Spacebar</strong> to play or pause.</p>
     <p>Move with <strong>←</strong>, <strong>→</strong></p>
     <p>Press <strong>M</strong> to toggle mute.</p>
-    <p><strong>Before Song:</strong> <span id="beforeSong">None</span></p>
+    <p><strong>Previous Song:</strong> <span id="previousSong">None</span></p>
     <p><strong>Currently Playing:</strong> <span id="currentSong">None</span></p>
     <p><strong>Next Song:</strong> <span id="nextSong">None</span></p>
     <p><strong>Volume:</strong> <input type="range" id="volumeControl" min="0" max="1" step="0.01" value="1"></p>
@@ -42,6 +42,7 @@
         let isMuted = false;
 
         const currentSongElement = document.getElementById("currentSong");
+        const previousSongElement = document.getElementById("previousSong");
         const nextSongElement = document.getElementById("nextSong");
         const statusElement = document.getElementById("status");
         const currentTimeElement = document.getElementById("currentTime");
@@ -64,6 +65,7 @@
         });
 
         function updateSongInfo() {
+            previousSongElement.textContent = songs[currentSongIndex - 1]?.displayName || "None";
             currentSongElement.textContent = songs[currentSongIndex]?.displayName || "None";
             nextSongElement.textContent = songs[currentSongIndex + 1]?.displayName || "None";
         }
