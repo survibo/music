@@ -15,6 +15,11 @@
     <p><strong>Volume:</strong> <input type="range" id="volumeControl" min="0" max="1" step="0.01" value="1"></p>
     <p><strong>Status:</strong> <span id="status">Stopped</span></p>
     <p><strong>Time:</strong> <span id="currentTime">0:00</span> / <span id="duration">0:00</span></p>
+    
+    <h2>Song List</h2>
+    <ul id="songList">
+        <!-- Songs will be displayed here -->
+    </ul>
 
     <script>
         const songs = [
@@ -25,7 +30,8 @@
             { file: "베토벤-교향곡-5번-운명-1악장 (2).mp3", displayName: "따다다단 효과음" },
             { file: "문닫는 소리.wav", displayName: "문닫는 효과음" },
             { file: "바람 효과음.mp3", displayName: "바람 효과음" },
-            { file: "In summer.mp3", displayName: "In summer" }
+            { file: "In summer.mp3", displayName: "In summer" },
+            { file: "https://drive.google.com/file/d/1xMMz8EZ4XU8ETtbZwKj6XhN4Ovn1gSK7/view?usp=sharing", displayName: "Let it go (Google Drive)" }
         ];
 
         let currentSongIndex = 0;
@@ -39,6 +45,22 @@
         const statusElement = document.getElementById("status");
         const currentTimeElement = document.getElementById("currentTime");
         const durationElement = document.getElementById("duration");
+        const songListElement = document.getElementById("songList");
+
+        // Populate the song list
+        songs.forEach((song, index) => {
+            const li = document.createElement("li");
+            if (song.file.startsWith("http")) {
+                const link = document.createElement("a");
+                link.href = song.file;
+                link.textContent = song.displayName;
+                link.target = "_blank";
+                li.appendChild(link);
+            } else {
+                li.textContent = song.displayName;
+            }
+            songListElement.appendChild(li);
+        });
 
         function updateSongInfo() {
             currentSongElement.textContent = songs[currentSongIndex]?.displayName || "None";
@@ -52,6 +74,12 @@
         }
 
         function loadSong(index) {
+            if (songs[index].file.startsWith("http")) {
+                alert("This song is a link. Please open it manually.");
+                audio.pause();
+                statusElement.textContent = "Stopped";
+                return;
+            }
             audio.src = songs[index].file;
             audio.play();
             statusElement.textContent = "Playing";
@@ -102,7 +130,11 @@
             }
         });
 
-        audio.addEventListener("ended", playNextSong);
+        // Stop auto-playing next song
+        audio.addEventListener("ended", () => {
+            statusElement.textContent = "Song Finished";
+            audio.pause();
+        });
 
         audio.addEventListener('timeupdate', () => {
             currentTimeElement.textContent = formatTime(audio.currentTime);
