@@ -102,15 +102,6 @@
             }
         }
 
-        function playPreviousSong() {
-            if (currentSongIndex > 0) {
-                currentSongIndex--;
-                loadSong(currentSongIndex);
-            } else {
-                alert("This is the first song.");
-            }
-        }
-
         function toggleMute() {
             isMuted = !isMuted;
             audio.muted = isMuted;
