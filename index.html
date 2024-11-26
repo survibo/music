@@ -11,6 +11,8 @@
     <p>Press <strong>M</strong> to toggle mute.</p>
     <p><strong>Currently Playing:</strong> <span id="currentSong">None</span></p>
     <p><strong>Next Song:</strong> <span id="nextSong">None</span></p>
+    <p><strong>Volume:</strong> <input type="range" id="volumeControl" min="0" max="1" step="0.01" value="1"></p>
+
 
     <script>
         // List of songs with custom display names
@@ -83,6 +85,14 @@
 
         // Initialize the displayed song info
         updateSongInfo();
+	// Get the volume control slider element
+	const volumeControl = document.getElementById("volumeControl");
+
+	// Update audio volume when the slider value changes
+	volumeControl.addEventListener("input", (event) => {
+    	audio.volume = event.target.value; // Set volume based on slider value
+	});
+
     </script>
 </body>
 </html>
