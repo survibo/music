@@ -12,16 +12,16 @@
     <p><strong>Currently Playing:</strong> <span id="currentSong">None</span></p>
     <p><strong>Next Song:</strong> <span id="nextSong">None</span></p>
     <p><strong>Volume:</strong> <input type="range" id="volumeControl" min="0" max="1" step="0.01" value="1"></p>
-
+    <p><strong>Status:</strong> <span id="status">Stopped</span></p>
 
     <script>
         // List of songs with custom display names
         const songs = [
-	    { file: "https://drive.google.com/file/d/1NyYxV-vAY34OuvBlutCfFNYQF5IUNySi/view?usp=sharing", displayName: "Disney Opening" },
+            { file: "https://drive.google.com/file/d/1NyYxV-vAY34OuvBlutCfFNYQF5IUNySi/view?usp=sharing", displayName: "Disney Opening" },
             { file: "Do you want to build a snow man 편집본.wav", displayName: "Do you want to build a snowman" },
-	    { file: "For the first time in forever 편집본 2.wav", displayName: "For the first time in forever" },
+            { file: "For the first time in forever 편집본 2.wav", displayName: "For the first time in forever" },
             { file: "Love is an open door 편집본.wav", displayName: "Love is an open door" },
-	    { file: "베토벤-교향곡-5번-운명-1악장.mp3", displayName: "따다다단 효과음" },
+            { file: "베토벤-교향곡-5번-운명-1악장.mp3", displayName: "따다다단 효과음" },
             { file: "https://drive.google.com/file/d/1xMMz8EZ4XU8ETtbZwKj6XhN4Ovn1gSK7/view?usp=sharing", displayName: "Let it go" },
             { file: "문닫는 소리.wav", displayName: "문닫는 효과음" },
             { file: "바람 효과음.mp3", displayName: "바람 효과음" },
@@ -35,6 +35,7 @@
         // HTML elements to display current and next song
         const currentSongElement = document.getElementById("currentSong");
         const nextSongElement = document.getElementById("nextSong");
+        const statusElement = document.getElementById("status"); // Status element
 
         // Function to update the displayed song information
         function updateSongInfo() {
@@ -52,10 +53,12 @@
                 audio.src = songs[currentSongIndex].file;
                 audio.play();
                 updateSongInfo(); // Update the displayed song information
+                statusElement.textContent = "Playing"; // Set status to "Playing"
                 currentSongIndex++;
             } else {
                 currentSongIndex = 0; // Reset to the first song
                 updateSongInfo(); // Update song info when loop resets
+                statusElement.textContent = "Stopped"; // Set status to "Stopped"
             }
         }
 
@@ -72,6 +75,7 @@
                 event.preventDefault(); // Prevent scrolling with spacebar
                 if (!audio.paused) {
                     audio.pause();
+                    statusElement.textContent = "Paused"; // Set status to "Paused"
                 } else {
                     playNextSong();
                 }
@@ -82,19 +86,20 @@
 
         // Prevent automatic play of the next song when the current one ends
         audio.addEventListener("ended", () => {
+            statusElement.textContent = "Song Finished"; // Set status to "Song Finished"
             audio.pause(); // Pause the audio explicitly
+        });
+
+        // Get the volume control slider element
+        const volumeControl = document.getElementById("volumeControl");
+
+        // Update audio volume when the slider value changes
+        volumeControl.addEventListener("input", (event) => {
+            audio.volume = event.target.value; // Set volume based on slider value
         });
 
         // Initialize the displayed song info
         updateSongInfo();
-	// Get the volume control slider element
-	const volumeControl = document.getElementById("volumeControl");
-
-	// Update audio volume when the slider value changes
-	volumeControl.addEventListener("input", (event) => {
-    	audio.volume = event.target.value; // Set volume based on slider value
-	});
-
     </script>
 </body>
 </html>
