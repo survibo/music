@@ -8,7 +8,7 @@
 <body>
     <h1>Music Player</h1>
     <p>Press <strong>Spacebar</strong> to play or pause.</p>
-    <p>Move with <strong>←</strong>, <strong>→</strong></p>
+    <p>Move with <strong>←</strong>, <strong>→</strong> or use the buttons below.</p>
     <p>Press <strong>M</strong> to toggle mute.</p>
     <p><strong>Previous Song:</strong> <span id="previousSong">None</span></p>
     <p><strong>Currently Playing:</strong> <span id="currentSong">None</span></p>
@@ -16,9 +16,12 @@
     <p><strong>Volume:</strong> <input type="range" id="volumeControl" min="0" max="1" step="0.01" value="1"></p>
     <p><strong>Status:</strong> <span id="status">Stopped</span></p>
     <p><strong>Time:</strong> <span id="currentTime">0:00</span> / <span id="duration">0:00</span></p>
-    <p>https://url.kr/ucqqa4</p>
-    <p>https://url.kr/sazqxj</p>
-    
+
+    <button id="previousButton">Previous</button>
+    <button id="playPauseButton">Play/Pause</button>
+    <button id="stopButton">Stop</button>
+    <button id="nextButton">Next</button>
+
     <h2>Song List</h2>
     <ul id="songList">
         <!-- Songs will be displayed here -->
@@ -26,34 +29,14 @@
 
     <script>
         const songs = [
-            { file: "Disney - 100 Years of Wonder Intro (1080p HD) [ ezmp3.cc ] (1).mp3", displayName: "Disney Opening" },
+            { file: "Disney - 100 Years of Wonder Intro.mp3", displayName: "Disney Opening" },
             { file: "d.mp3", displayName: "놀기 BGM" },
-            { file: "troll.mp3", displayName: "트롤 굴러가는 효과음" },
-            { file: "Do you want to build a snow man 편집본.wav", displayName: "Do you want to build a snowman" },
-            { file: "For the first time renewr.mp3", displayName: "For the first time in forever" },
-            { file: "Love Is An Open Door 편집.mp3", displayName: "Love is an open door 저음 노래방" },
-            { file: "왕실 연회.mp3", displayName: "연회 BGM" },
-            { file: "party-is-over-korean [music].mp3", displayName: "얼음 마법 효과음" },
-            { file: "small-group-people-whispering-sound-effect.mp3", displayName: "웅성웅성 효과음" },
-            { file: "Let it go 저음 편집.mp3", displayName: "Let it go 저음 노래방" },
-            { file: "door.mp3", displayName: "문 여는 효과음" },
-            { file: "문닫는 소리.wav", displayName: "문닫는 효과음" },
-            { file: "바람 효과음.mp3", displayName: "바람 효과음" },
-            { file: "In summer.mp3", displayName: "In summer" },
-            { file: "", displayName: "미사용" },
-            { file: "Love is an open door 편집본.wav", displayName: "Love is an open door" },
-            { file: "Love is an open door 저음 노래방.mp3", displayName: "Love is an open door 저음 녹음 노래방" },
-            { file: "Let it go edit minor.mp3", displayName: "Let it go" },
-            { file: "Let it go.mp3", displayName: "Let it go 저음 녹음 노래방" },
-            { file: "let it go 저음 노래방 편집완료.mp3", displayName: "Let it go 저음 녹음 노래방" },
-            { file: "베토벤-교향곡-5번-운명-1악장 (2).mp3", displayName: "따다다단 효과음" },
-
+            { file: "troll.mp3", displayName: "트롤 굴러가는 효과음" }
         ];
 
         let currentSongIndex = 0;
         let audio = new Audio();
         audio.preload = 'auto';
-
         let isMuted = false;
 
         const currentSongElement = document.getElementById("currentSong");
@@ -64,19 +47,12 @@
         const durationElement = document.getElementById("duration");
         const songListElement = document.getElementById("songList");
         const volumeControl = document.getElementById("volumeControl");
+        const playPauseButton = document.getElementById("playPauseButton");
 
         // Populate the song list
-        songs.forEach((song, index) => {
+        songs.forEach(song => {
             const li = document.createElement("li");
-            if (song.file.startsWith("http")) {
-                const link = document.createElement("a");
-                link.href = song.file;
-                link.textContent = song.displayName;
-                link.target = "_blank";
-                li.appendChild(link);
-            } else {
-                li.textContent = song.displayName;
-            }
+            li.textContent = song.displayName;
             songListElement.appendChild(li);
         });
 
@@ -93,12 +69,6 @@
         }
 
         function loadSong(index) {
-            if (songs[index].file.startsWith("http")) {
-                alert("This song is a link. Please open it manually.");
-                statusElement.textContent = "Stopped";
-                updateSongInfo();
-                return;
-            }
             audio.src = songs[index].file;
             audio.play();
             statusElement.textContent = "Playing";
@@ -116,52 +86,43 @@
                 statusElement.textContent = "Stopped";
             }
         }
+
         function playPreviousSong() {
-            if (currentSongIndex > 0) 
+            if (currentSongIndex > 0) {
                 currentSongIndex--;
                 loadSong(currentSongIndex);
-        }
-        
-        function toggleMute() {
-            isMuted = !isMuted;
-            audio.muted = isMuted;
-            alert(isMuted ? "Muted" : "Unmuted");
-        }
-
-        document.addEventListener("keydown", (event) => {
-            if (event.code === "Space") {
-                event.preventDefault();
-                if (!audio.paused) {
-                    audio.pause();
-                    statusElement.textContent = "Paused";
-                } else {
-                    audio.play();
-                    statusElement.textContent = "Playing";
-                }
-            } else if (event.code === "ArrowRight") {
-                playNextSong();
-            } else if (event.code === "ArrowLeft") {
-                playPreviousSong();
-            } else if (event.code === "KeyM") {
-                toggleMute();
             }
-        });
+        }
 
-        audio.addEventListener("ended", () => {
-            statusElement.textContent = "Song Finished";
+        function togglePlayPause() {
+            if (audio.paused) {
+                audio.play();
+                statusElement.textContent = "Playing";
+                playPauseButton.textContent = "Pause";
+            } else {
+                audio.pause();
+                statusElement.textContent = "Paused";
+                playPauseButton.textContent = "Play";
+            }
+        }
+
+        function stopSong() {
             audio.pause();
-        });
+            audio.currentTime = 0;
+            statusElement.textContent = "Stopped";
+            playPauseButton.textContent = "Play";
+        }
 
-        audio.addEventListener('timeupdate', () => {
-            currentTimeElement.textContent = formatTime(audio.currentTime);
-        });
+        document.getElementById("previousButton").addEventListener("click", playPreviousSong);
+        document.getElementById("nextButton").addEventListener("click", playNextSong);
+        document.getElementById("playPauseButton").addEventListener("click", togglePlayPause);
+        document.getElementById("stopButton").addEventListener("click", stopSong);
 
         volumeControl.addEventListener("input", (event) => {
             audio.volume = event.target.value;
         });
 
         updateSongInfo();
-        statusElement.textContent = "Stopped";
     </script>
 </body>
 </html>
